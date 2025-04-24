@@ -1,10 +1,11 @@
 import React from "react";
-import SeatPicker from "./SeatPicker";
 
 export default function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <SeatPicker />
+    <div style={{ padding: "50px", textAlign: "center" }}>
+      <h1 style={{ fontSize: "32px", color: "#333" }}>
+        ✅ App is Rendering!
+      </h1>
     </div>
   );
 }
