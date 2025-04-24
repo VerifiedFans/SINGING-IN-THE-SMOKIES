@@ -1,4 +1,18 @@
-import React, { useState } from "react";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe("pk_test_YOUR_PUBLIC_KEY"); // Use your actual Stripe public key
+
+const handleCheckout = async (priceId) => {
+  const stripe = await stripePromise;
+  const { error } = await stripe.redirectToCheckout({
+    lineItems: [{ price: priceId, quantity: 1 }],
+    mode: "payment",
+    successUrl: "https://yourdomain.com/success",
+    cancelUrl: "https://yourdomain.com/cancel",
+  });
+  if (error) console.error(error);
+};
+ React, { useState } from "react";
 
 const seatData = {
   "101-A1": { section: "VIP", available: true },
