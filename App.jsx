@@ -1,5 +1,5 @@
 import React from "react";
-import SeatPicker from "./SeatPicker"; // CASE SENSITIVE
+import SeatPicker from "./SeatPicker";
 
 export default function App() {
   return (
