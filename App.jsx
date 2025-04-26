@@ -4,14 +4,17 @@ import { supabase } from "./supabaseClient";
 
 export default function App() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // 🛠 Add loading state
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user);
+      setLoading(false); // ✅ Done loading
     });
 
     const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user || null);
+      setLoading(false); // ✅ Done loading on auth change
     });
 
     return () => listener.subscription.unsubscribe();
@@ -28,8 +31,11 @@ export default function App() {
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) console.error('Error signing out:', error.message);
-    else window.location.reload(); // 🔥 reload site after logout to refresh session
+    else window.location.reload(); // Refresh after logout
   };
+
+  // 🛑 If still loading, show nothing
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
