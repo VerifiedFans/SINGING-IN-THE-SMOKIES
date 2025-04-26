@@ -31,14 +31,14 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-      <h1 className="text-xl font-bold mb-4">🎟 Singing in the Smokies</h1>
-      
+      <h1 className="text-2xl font-bold mb-4">🎟 Singing in the Smokies</h1>
+
       {!user ? (
         <button onClick={signIn}>Sign In</button>
       ) : (
         <>
-          <p>Logged in as {user.email}</p>
-          <button onClick={signOut}>Sign Out</button>
+          <p className="mb-4">Logged in as {user.email}</p>
+          <button onClick={signOut} className="mb-4">Sign Out</button>
           <SeatPicker />
         </>
       )}
