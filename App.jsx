@@ -26,7 +26,9 @@ export default function App() {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) console.error('Error signing out:', error.message);
+    else window.location.reload(); // 🔥 reload site after logout to refresh session
   };
 
   return (
@@ -34,11 +36,23 @@ export default function App() {
       <h1 className="text-2xl font-bold mb-4">🎟 Singing in the Smokies</h1>
 
       {!user ? (
-        <button onClick={signIn}>Sign In</button>
+        <button 
+          onClick={signIn} 
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          Sign In
+        </button>
       ) : (
         <>
           <p className="mb-4">Logged in as {user.email}</p>
-          <button onClick={signOut} className="mb-4">Sign Out</button>
+
+          <button 
+            onClick={signOut}
+            className="bg-red-500 text-white px-4 py-2 mb-6 rounded hover:bg-red-600"
+          >
+            Sign Out
+          </button>
+
           <SeatPicker />
         </>
       )}
