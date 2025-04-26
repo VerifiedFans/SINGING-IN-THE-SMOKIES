@@ -11,14 +11,7 @@ export default function App() {
   useEffect(() => {
     const handleRedirect = async () => {
       const { data, error } = await supabase.auth.getSessionFromUrl();
-
-      if (error) {
-        console.error('Error handling redirect:', error.message);
-      }
-
-      if (data?.session) {
-        console.log('Session restored from magic link!');
-      }
+      if (error) console.error('Error handling magic link redirect:', error.message);
     };
 
     const getUser = async () => {
@@ -34,14 +27,19 @@ export default function App() {
       setLoading(false);
     });
 
-    return () => listener.subscription.unsubscribe();
+    return () => listener?.subscription.unsubscribe();
   }, []);
 
   const signIn = async (e) => {
     e.preventDefault();
     setSendingLink(true);
 
-    const { error } = await supabase.auth.signInWithOtp({ email });
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        redirectTo: 'https://singing-in-the-smokies.vercel.app'
+      }
+    });
 
     setSendingLink(false);
 
@@ -59,7 +57,7 @@ export default function App() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="min-h-screen flex items-center justify-center text-xl">Loading...</div>;
   }
 
   if (!user) {
@@ -92,6 +90,7 @@ export default function App() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
       <h1 className="text-2xl font-bold mb-6">🎟 Singing in the Smokies</h1>
       <p className="mb-4">Logged in as {user.email}</p>
+
       <button
         onClick={signOut}
         className="bg-red-500 text-white px-4 py-2 mb-6 rounded hover:bg-red-600"
