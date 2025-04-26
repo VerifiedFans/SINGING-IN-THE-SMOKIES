@@ -9,22 +9,32 @@ export default function App() {
   const [sendingLink, setSendingLink] = useState(false);
 
   useEffect(() => {
+    const handleRedirect = async () => {
+      const { data, error } = await supabase.auth.getSessionFromUrl();
+
+      if (error) {
+        console.error('Error handling redirect:', error.message);
+      }
+
+      if (data?.session) {
+        console.log('Session restored from magic link!');
+      }
+    };
+
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
       setLoading(false);
     };
 
-    getUser();
+    handleRedirect().then(getUser);
 
     const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user || null);
       setLoading(false);
     });
 
-    return () => {
-      listener?.subscription.unsubscribe();
-    };
+    return () => listener.subscription.unsubscribe();
   }, []);
 
   const signIn = async (e) => {
@@ -49,7 +59,7 @@ export default function App() {
   };
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center text-xl">Loading...</div>;
+    return <div>Loading...</div>;
   }
 
   if (!user) {
