@@ -22,7 +22,9 @@ export default function App() {
       setLoading(false);
     });
 
-    return () => listener.subscription.unsubscribe();
+    return () => {
+      listener?.subscription.unsubscribe();
+    };
   }, []);
 
   const signIn = async (e) => {
@@ -47,14 +49,14 @@ export default function App() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="min-h-screen flex items-center justify-center text-xl">Loading...</div>;
   }
 
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
-      <h1 className="text-2xl font-bold mb-6">🎟 Singing in the Smokies</h1>
+  if (!user) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
+        <h1 className="text-2xl font-bold mb-6">🎟 Singing in the Smokies</h1>
 
-      {!user ? (
         <form onSubmit={signIn} className="flex flex-col items-center gap-4 w-full max-w-xs">
           <input
             type="email"
@@ -72,18 +74,22 @@ export default function App() {
             {sendingLink ? "Sending..." : "Send Magic Link"}
           </button>
         </form>
-      ) : (
-        <div className="flex flex-col items-center">
-          <p className="mb-4">Logged in as {user.email}</p>
-          <button
-            onClick={signOut}
-            className="bg-red-500 text-white px-4 py-2 mb-6 rounded hover:bg-red-600"
-          >
-            Sign Out
-          </button>
-          <SeatPicker />
-        </div>
-      )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
+      <h1 className="text-2xl font-bold mb-6">🎟 Singing in the Smokies</h1>
+      <p className="mb-4">Logged in as {user.email}</p>
+      <button
+        onClick={signOut}
+        className="bg-red-500 text-white px-4 py-2 mb-6 rounded hover:bg-red-600"
+      >
+        Sign Out
+      </button>
+
+      <SeatPicker />
     </div>
   );
 }
