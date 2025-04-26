@@ -5,15 +5,17 @@ import { supabase } from "./supabaseClient";
 export default function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [email, setEmail] = useState(""); // State to track email input
-  const [sendingLink, setSendingLink] = useState(false); // State to show sending link status
+  const [email, setEmail] = useState("");
+  const [sendingLink, setSendingLink] = useState(false);
 
   useEffect(() => {
-    // Check if user is already logged in
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
       setLoading(false);
-    });
+    };
+
+    getUser();
 
     const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user || null);
@@ -27,14 +29,15 @@ export default function App() {
     e.preventDefault();
     setSendingLink(true);
 
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-    });
+    const { error } = await supabase.auth.signInWithOtp({ email });
 
     setSendingLink(false);
 
-    if (error) alert("Error signing in: " + error.message);
-    else alert("Check your email for the magic link!");
+    if (error) {
+      alert("Error signing in: " + error.message);
+    } else {
+      alert("Check your email for the magic link!");
+    }
   };
 
   const signOut = async () => {
@@ -43,7 +46,9 @@ export default function App() {
     else window.location.reload();
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-6">
@@ -68,18 +73,16 @@ export default function App() {
           </button>
         </form>
       ) : (
-        <>
+        <div className="flex flex-col items-center">
           <p className="mb-4">Logged in as {user.email}</p>
-
           <button
             onClick={signOut}
             className="bg-red-500 text-white px-4 py-2 mb-6 rounded hover:bg-red-600"
           >
             Sign Out
           </button>
-
           <SeatPicker />
-        </>
+        </div>
       )}
     </div>
   );
