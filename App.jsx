@@ -5,10 +5,11 @@ import { supabase } from "./supabaseClient";
 export default function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [email, setEmail] = useState(""); // 🛠 Email state
-  const [sendingLink, setSendingLink] = useState(false); // 🛠 Sending state
+  const [email, setEmail] = useState(""); // State to track email input
+  const [sendingLink, setSendingLink] = useState(false); // State to show sending link status
 
   useEffect(() => {
+    // Check if user is already logged in
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user);
       setLoading(false);
@@ -69,12 +70,14 @@ export default function App() {
       ) : (
         <>
           <p className="mb-4">Logged in as {user.email}</p>
+
           <button
             onClick={signOut}
             className="bg-red-500 text-white px-4 py-2 mb-6 rounded hover:bg-red-600"
           >
             Sign Out
           </button>
+
           <SeatPicker />
         </>
       )}
