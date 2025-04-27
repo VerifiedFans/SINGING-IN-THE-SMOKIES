@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import SeatPicker from "./SeatPicker";
 import ContactForm from "./ContactForm";
