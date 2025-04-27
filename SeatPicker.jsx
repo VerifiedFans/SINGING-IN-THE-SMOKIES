@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function SeatPicker() {
+export default function SeatPicker({ onContinue }) {
   const [selectedSeats, setSelectedSeats] = useState([]);
 
   const seats = [];
@@ -53,7 +53,7 @@ export default function SeatPicker() {
 
   const handleSeatClick = (id) => {
     if (selectedSeats.includes(id)) {
-      setSelectedSeats(selectedSeats.filter(seat => seat !== id));
+      setSelectedSeats(selectedSeats.filter((seat) => seat !== id));
     } else {
       setSelectedSeats([...selectedSeats, id]);
     }
@@ -71,10 +71,34 @@ export default function SeatPicker() {
       <svg width="1000" height="900" viewBox="0 0 100 105">
         {/* Stage */}
         <rect x="20" y="95" width="60" height="5" fill="gray" />
-        <text x="50" y="98" textAnchor="middle" fill="white" fontSize="4">STAGE</text>
+        <text x="50" y="98" textAnchor="middle" fill="white" fontSize="4">
+          STAGE
+        </text>
 
         {/* Seats */}
         {seats.map((seat) => (
-          <
+          <circle
+            key={seat.id}
+            cx={seat.x}
+            cy={seat.y}
+            r="0.8"
+            fill={getColor(seat)}
+            stroke="black"
+            strokeWidth="0.1"
+            onClick={() => handleSeatClick(seat.id)}
+            style={{ cursor: "pointer" }}
+          />
+        ))}
+      </svg>
+
+      {/* Selected seats */}
+      {selectedSeats.length > 0 && (
+        <div style={{ marginTop: "1rem" }}>
+          <h4>Selected Seats:</h4>
+          <div>{selectedSeats.join(", ")}</div>
+
+          {/* CONTINUE BUTTON */}
+          <button
+            onClick={() => onContinue(selectedSeats)}
 
   
